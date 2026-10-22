@@ -1,0 +1,11 @@
+*{box-sizing:border-box}body{margin:0;font-family:system-ui,sans-serif;color:#1a1a2e;background:#fafafa}
+nav{display:flex;justify-content:space-between;padding:16px 32px;background:#fff;border-bottom:1px solid #eee}
+nav a{margin-left:20px;color:#3b3bd9;text-decoration:none}
+.promo-banner{background:#ffe08a;text-align:center;padding:10px;font-weight:600}
+.hero{max-width:720px;margin:72px auto;padding:0 24px;text-align:center}
+#hero-title{font-size:44px;margin:0 0 16px}
+#hero-subtitle{font-size:18px;color:#555;margin-bottom:32px}
+#cta-button,.btn{display:inline-block;background:#3b3bd9;color:#fff;border:0;border-radius:8px;padding:14px 28px;font-size:16px;cursor:pointer;text-decoration:none}
+.plans{display:flex;gap:24px;justify-content:center;max-width:900px;margin:48px auto;padding:0 24px}
+.plan{flex:1;background:#fff;border:1px solid #eee;border-radius:12px;padding:24px;text-align:center}
+footer{text-align:center;color:#888;padding:40px}

@@ -1,0 +1,232 @@
+<title>Kameleoon MCP Tool Map</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@400;600;700&display=swap">
+<style>
+/* Layout: top-down organogram (root > categories > sub-categories > tools), pans sideways; detail card below; accordion list on phones */
+:root{
+  --bg:#f5f6f8; --surface:#ffffff; --fg:#161b26; --muted:#5b6475; --line:#d5d9e2;
+  --root:#161b26; --root-fg:#ffffff;
+  --c1:#3b6ea8; --c2:#2f8a80; --c3:#4f9f96; --c4:#8a7a55; --c5:#6d5fa6; --c6:#8272b8; --c7:#5a4f8c; --c8:#64748b;
+  --guard:#b45309; --guard-bg:#fef3c7;
+  --display:"IBM Plex Sans",system-ui,sans-serif; --body:"IBM Plex Sans",system-ui,sans-serif; --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0f131b; --surface:#171c27; --fg:#e8ebf2; --muted:#9aa3b5; --line:#2a3242;
+  --root:#e8ebf2; --root-fg:#0f131b;
+  --c1:#7aa2d8; --c2:#5fb3a8; --c3:#7cc4ba; --c4:#c4b07a; --c5:#9d92d4; --c6:#b3a8e2; --c7:#877cc0; --c8:#94a3b8;
+  --guard:#fbbf24; --guard-bg:#3a2d0c; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0f131b; --surface:#171c27; --fg:#e8ebf2; --muted:#9aa3b5; --line:#2a3242;
+  --root:#e8ebf2; --root-fg:#0f131b;
+  --c1:#7aa2d8; --c2:#5fb3a8; --c3:#7cc4ba; --c4:#c4b07a; --c5:#9d92d4; --c6:#b3a8e2; --c7:#877cc0; --c8:#94a3b8;
+  --guard:#fbbf24; --guard-bg:#3a2d0c; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:var(--body);font-size:15px;line-height:1.5;
+  padding-inline:max(16px,env(safe-area-inset-left,0px)) max(16px,env(safe-area-inset-right,0px));padding-block:24px 40px}
+.wrap{max-width:1320px;margin:0 auto}
+header{display:flex;flex-wrap:wrap;gap:8px 32px;align-items:flex-end;justify-content:space-between;margin-bottom:20px}
+h1{font-family:var(--display);font-size:clamp(26px,4vw,38px);line-height:1.1;margin:0;font-weight:700;text-wrap:balance}
+header p{margin:6px 0 0;color:var(--muted);max-width:62ch}
+.stats{font-family:var(--mono);font-size:12px;color:var(--muted);display:flex;gap:16px}
+.stats b{color:var(--fg);font-size:18px;font-family:var(--display);display:block}
+.legend{display:flex;flex-wrap:wrap;gap:6px 22px;margin:0 0 14px;font-size:13px;color:var(--muted)}
+.legend span{display:inline-flex;align-items:center;gap:7px}
+.legend i{display:inline-block;width:13px;height:13px;border-radius:3px;border:2.5px solid var(--fg)}
+.legend i.w{background:var(--fg)}
+.legend i.g{border-color:var(--guard);background:var(--surface)}
+.chart{background:var(--surface);border:1px solid var(--line);border-radius:10px;overflow-x:auto;overscroll-behavior-x:contain;min-width:0}
+.chart svg{display:block}
+.hint{font-size:12px;color:var(--muted);margin:8px 2px 16px}
+.edge{fill:none;stroke-width:1.8;opacity:.55}
+.cat{cursor:pointer}
+.cat rect{fill:var(--surface);stroke-width:2.5;transition:fill .15s}
+.cat:hover rect,.cat.on rect{fill:var(--gc)}
+.cat text{font-family:var(--display);font-weight:600;font-size:15px;text-anchor:middle;fill:var(--fg);pointer-events:none}
+.cat text.n{font-family:var(--mono);font-weight:400;font-size:11px}
+.cat:hover text,.cat.on text{fill:var(--bg)}
+.root rect{fill:var(--root)}
+.root text{fill:var(--root-fg);font-family:var(--display);font-weight:700;text-anchor:middle;font-size:16px}
+.tool{cursor:default}
+.tool rect.box{fill:var(--bg);stroke:var(--line);stroke-width:1.5}
+.tool:hover rect.box{stroke:var(--gc)}
+.tool.guard rect.box{stroke:var(--guard);stroke-width:2}
+.tool rect.m{fill:var(--gc);stroke:var(--gc);stroke-width:2.5}
+.tool.read rect.m{fill:var(--bg)}
+.tool text{font-family:var(--mono);font-size:12.5px;fill:var(--fg)}
+svg *:focus{outline:none}
+.detail{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:18px 20px;min-width:0;display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:8px 32px;align-items:start}
+.detail .grp{font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--gc);grid-column:1/-1}
+.detail h2{font-family:var(--mono);font-size:17px;margin:0;word-break:break-word;font-weight:700;grid-column:1/-1}
+.detail p{margin:0 0 6px}
+.lbl{font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:4px}
+.ex{border-left:3px solid var(--gc);padding:8px 12px;background:var(--bg);border-radius:0 6px 6px 0;margin-bottom:12px;font-style:italic}
+.params{font-family:var(--mono);font-size:12px;margin-bottom:12px;word-break:break-word}
+.badge{display:inline-block;font-size:12px;font-weight:600;color:var(--guard);background:var(--guard-bg);padding:3px 9px;border-radius:99px}
+.acc{display:inline-block;font-size:12px;font-weight:600;padding:3px 9px;border-radius:99px;margin-right:6px;background:var(--bg);color:var(--muted);border:1px solid var(--line)}
+.acc.w{color:var(--fg)}
+.list{display:none}
+.list details{background:var(--surface);border:1px solid var(--line);border-radius:8px;margin-bottom:8px}
+.list summary{padding:12px 14px;cursor:pointer;font-family:var(--display);font-weight:600;border-left:4px solid var(--gc);border-radius:8px;display:flex;justify-content:space-between;gap:8px}
+.list summary span{font-family:var(--mono);font-weight:400;font-size:12px;color:var(--muted)}
+.list .t{padding:12px 14px;border-top:1px solid var(--line)}
+.list .t code{font-family:var(--mono);font-weight:700;font-size:13px;word-break:break-word}
+.list .t p{margin:4px 0 6px}
+.list .t em{display:block;font-size:14px;color:var(--muted)}
+summary:focus-visible{outline:2px solid var(--fg);outline-offset:2px}
+@media (max-width:900px){.detail{grid-template-columns:1fr}}
+@media (max-width:640px){.chart,.detail,.hint,.legend{display:none}.list{display:block}}
+</style>
+
+<div class="wrap">
+<header>
+  <div>
+    <h1>Kameleoon MCP tool map</h1>
+    <p>Click a category to open it, then hover a tool for its use case and an example prompt.</p>
+  </div>
+  
+</header>
+
+<div class="legend"><span><i></i>Read only: fetches data, changes nothing</span><span><i class="w"></i>Read and write: creates or changes something</span><span><i class="g"></i>Amber outline: previews first, applies only on <code>confirm</code> or <code>force</code></span></div>
+
+<div class="chart" id="chart"><svg id="svg" role="img" aria-label="Organogram of Kameleoon MCP tools grouped by category"></svg></div>
+<div class="hint">The selected category stays open until you click another one.</div>
+<div class="detail" id="panel" aria-live="polite"></div>
+<div class="list" id="list"></div>
+</div>
+
+<script>
+const G=[
+{id:"exp",name:"Experiments",c:"--c1",tools:[
+["experiment_list","Find experiments by name or ID, or list only those with a given status.","\"List active experiments on site d1alzzxd7k.\"","siteCode, filterQuery, status",0],
+["experiment_get","Read an experiment's full configuration: variations, traffic split, goals, targeting.","\"Show the configuration for experiment 149640.\"","experimentId",0],
+["experiment_code_get","Pull a variation's raw JavaScript, CSS and custom JSON, plus shared code. Use it to review what Kameleoon stored.","\"Pull the code for variation 1 of experiment 149640.\"","experimentId, variationId",0],
+["experiment_results_get","Statistical results for every attached goal: conversion rates, significance, confidence intervals, winner.","\"Summarize results for experiment 149640.\"","experimentId · audienceBasis VISITORS|VISITS",0],
+["experiment_create","Create a draft experiment. It comes with a first variation and a targeting rule.","\"Create a CLASSIC experiment Homepage hero on site d1alzzxd7k.\"","payload: siteCode, name, type, baseURL",0],
+["experiment_variation_create","Add a variation with its own JS, CSS, custom JSON or redirect. Running experiments get it at 0% traffic.","\"On experiment 149640, add a variation that makes the #buy-now button green.\"","experimentId, name",1,"Not available for stopped, MVT or feature-flag experiments (use feature_flag_variation_create). Draft experiments split traffic evenly; a running experiment gets the new variation at 0%. Code is stored as provided, not generated."],
+["experiment_variation_update","Change a variation's code, name or redirect. Only the fields you pass change; repeated calls are safe.","\"In variation 1 of experiment 149640, make the #buy-now button red.\"","variationId",1,"Not available for stopped, MVT or feature-flag experiments. If you pass experimentId it must match the variation's experiment. On a non-draft experiment it previews first and applies on confirm. An empty string clears a code field, and repeating the same call changes nothing."],
+["experiment_update","Change settings such as name, goals, shared code or data collection. Use it to attach the goal an experiment needs before it can start.","\"Set goal 271552 as the primary goal of experiment 149640.\"","experimentId",1,"Only the fields you pass change. Goals and tags replace the whole list, and the primary goal always stays in it."],
+["experiment_traffic_allocation_set","Set the split between the original page and the variations while the experiment isn't serving traffic.","\"On experiment 149640, give the original 50% and each variation 25%.\"","experimentId, originPercentage, variationAllocations",1,"Works on draft, scheduled and paused experiments. The split of a running experiment, or one using a bandit method, can't be changed through MCP."],
+["experiment_duplicate","Clone an experiment into a new draft, with variations, code and targeting.","\"Duplicate experiment 149640.\"","experimentId",0],
+["experiment_lifecycle_update","Start, pause, resume, stop or delete. Stop and delete need confirmation.","\"Start experiment 149640.\"","experimentId, status",1,"A running experiment must be stopped before it can be deleted."],
+["transpose_winning_experiment","Fetch the winning variation's code and return instructions to rebuild it natively behind a new feature flag.","\"Implement the winning variant of experiment 373001 as a feature flag.\"","experimentId · mode",0]]},
+{id:"ff",name:"Flag management",c:"--c2",tools:[
+["feature_flag_list","Find flags by key, name or ID.","\"List all feature flags for site d1alzzxd7k.\"","siteCode, filterQuery",0],
+["feature_flag_get","A flag's full configuration in an environment: variations, variables, goal, rule chain.","\"Show configuration for flag snake_game.\"","featureKey, siteCode",0],
+["feature_flag_create","Create a flag with default on and off variations.","\"Create a flag ui_refresh for site d1alzzxd7k.\"","siteCode, featureKey, name",0],
+["feature_flag_duplicate","Clone a flag. The copy starts off in every environment.","\"Duplicate the new_search flag.\"","featureKey, siteCode",0],
+["feature_flag_delete","Permanently delete a flag and all of its configuration.","\"Delete the flag ui_refresh.\"","featureKey, siteCode",1],
+["feature_flag_enable","Turn the per-environment master switch on so the SDK evaluates rules.","\"Turn on new_search in production.\"","featureKey, siteCode, environmentKey",1],
+["feature_flag_disable","Turn the per-environment switch off. The rule chain stays intact.","\"Turn off new_search in staging.\"","featureKey, siteCode, environmentKey",1],
+["feature_flag_activity_logs_get","Audit trail of flag changes: who changed what, and when.","\"Show the recent change history for these feature flags.\"","type, page, perPage",0],
+["feature_flag_experiment_results_get","Statistical results for every goal on a flag's experimentation rule.","\"Get the experiment results for the rule on new_search.\"","featureKey, siteCode, environmentKey, experimentId",0]]},
+{id:"del",name:"Flag delivery & variables",c:"--c3",tools:[
+["feature_flag_rule_targeted_create","Serve one variation to a percentage of traffic, with optional scheduling.","\"Roll new_search out to 20% in production.\"","variationKey, exposition, releaseDateTime, timeZone",1,"If the call times out, the rule may still exist. Check feature_flag_get before retrying."],
+["feature_flag_rule_progressive_create","Raise a variation's exposure in fixed steps for a gradual rollout.","\"Roll new_search out in production from 5% to 100%, adding 10% every day.\"","startExposition, stopExposition, increaseBy, frequencyUnit",1,"If the call times out, the rule may still exist. Check feature_flag_get before retrying."],
+["feature_flag_rule_experimentation_create","A/B rule that splits traffic across variations with statistical tracking.","\"A/B test off vs on 50/50 on new_search.\"","controlVariationKey, trafficAllocations",1,"If the call times out, the rule may still exist. Check feature_flag_get before retrying."],
+["feature_flag_variation_create","Add a named custom variation to a flag.","\"Add a variant_a variation to new_search.\"","variationKey, variationName",0],
+["feature_flag_variable_create","Define a typed variable (BOOLEAN, NUMBER, STRING, JSON, JS, CSS, ENUM) with a default.","\"Add a STRING variable label defaulting to Search.\"","variableKey, variableType, defaultValue",0],
+["feature_flag_variation_variable_set","Override a variable's value for one variation.","\"Set label to Find on variant_a.\"","variationKey, variableKey, value",0]]},
+{id:"goal",name:"Goals",c:"--c4",tools:[
+["goal_list","Browse goals on a site with usage counts across experiments, flags and personalizations.","\"List goals for site d1alzzxd7k.\"","siteCode",0],
+["goal_get","A goal's type configuration, tags and usage counts.","\"Show goal 271552.\"","goalId",0],
+["goal_search","Find a goal by part of its name.","\"Search goals for checkout.\"","query",0],
+["goal_create","Create a goal of any type: URL, CLICK, SCROLL, PAGE_VIEWS, TIME_SPENT, CUSTOM and more.","\"Create a URL goal that matches /thank-you.\"","payload: name, siteCode, type",0],
+["goal_update","Edit a goal's name, description, tags or tracking tools.","\"Rename goal 271552 to Signup complete.\"","goalId",0],
+["goal_update_type","Switch a goal's type and replace its type-specific settings.","\"Change goal 271552 to a CLICK goal.\"","goalId, type",0],
+["goal_delete","Permanently delete a goal.","\"Delete goal 271552.\"","goalId",0]]},
+{id:"seg",name:"Segments",c:"--c5",tools:[
+["segment_list","Browse audience segments on a site with usage counts.","\"List segments for site d1alzzxd7k.\"","siteCode",0],
+["segment_get","A segment's condition tree, as raw JSON and a readable summary.","\"Show segment 200604.\"","segmentId",0],
+["segment_create","Create an audience from conditions such as geolocation, device, browser or custom data. Trees have at most two levels.","\"Create a segment for desktop visitors in France.\"","name, siteCode, conditionDataTree",0],
+["segment_update","Change name, description or conditions. Every campaign using it follows the new audience.","\"Add Belgium to segment 200604.\"","segmentId",1],
+["segment_delete","Delete a segment. Blocked when in use unless you set force.","\"Delete segment 200604.\"","segmentId",1,"Blocked while the segment is in use, unless you set force."]]},
+{id:"trg",name:"Triggers",c:"--c6",tools:[
+["trigger_list","Browse saved triggers on a site, optionally filtered by name.","\"List triggers on site d1alzzxd7k.\"","siteCode, query",0],
+["trigger_get","A trigger's conditions and the campaigns that use it.","\"Show trigger 579197.\"","triggerId",0],
+["trigger_create","Define a moment: page URL, title, referrer, traffic origin, page views or an event. Doesn't affect traffic until bound to an experiment.","\"Create a trigger that fires on pages whose URL contains /checkout.\"","name, siteCode, conditionDataTree",0],
+["trigger_update","Change a trigger's name, description or conditions.","\"Make trigger 579197 also fire on /cart.\"","triggerId",1],
+["trigger_delete","Delete a trigger. Blocked while in use unless you set force.","\"Delete trigger 579197.\"","triggerId",1,"Blocked while the trigger is in use, unless you set force."]]},
+{id:"site",name:"Sites",c:"--c8",tools:[
+["site_list","List the sites you can access with code, name and tracking status. Run it first to get a valid siteCode.","\"List the available Kameleoon sites.\"","none",0]]},
+{id:"rules",name:"Targeting rules",c:"--c7",tools:[
+["targeting_rule_list","List targeting rules on a site.","\"List targeting rules for site d1alzzxd7k.\"","siteCode",0],
+["targeting_rule_get","A rule's segment, configuration, trigger and the experiment it belongs to.","\"Show targeting rule 118605.\"","targetingRuleId",0],
+["targeting_rule_create","Attach a rule to an experiment that has none. Experiments from experiment_create already have one.","(Rarely needed. Use targeting_rule_update.)","segmentConfiguration, siteCode, experimentId",0],
+["targeting_rule_update","Choose who an experiment targets and when it fires, by setting its segment or trigger.","\"Target experiment 149640 to segment 200604.\"","experimentId",1,"Experiments already have a targeting rule from creation, so update it instead of creating another."]]}
+];
+const TOP=[
+ {id:"exp",name:"Experiments",c:"--c1",leaf:"exp"},
+ {id:"ffp",name:"Feature flags",c:"--c2",kids:["ff","del"]},
+ {id:"goal",name:"Goals",c:"--c4",leaf:"goal"},
+ {id:"site",name:"Sites",c:"--c8",leaf:"site"},
+ {id:"tgt",name:"Targeting",c:"--c5",kids:["seg","trg","rules"]}];
+const GB=Object.fromEntries(G.map(g=>[g.id,g]));
+const NS="http://www.w3.org/2000/svg",svg=document.getElementById("svg"),panel=document.getElementById("panel"),chart=document.getElementById("chart");
+const isRead=n=>/(_list|_get|_search)$/.test(n)||n==="transpose_winning_experiment";
+const accBadge=n=>isRead(n)?'<span class="acc">Read only</span>':'<span class="acc w">Read and write</span>';
+const total=G.reduce((a,g)=>a+g.tools.length,0),guarded=G.reduce((a,g)=>a+g.tools.filter(t=>t[4]).length,0);
+const el=(t,a={},p=svg)=>{const e=document.createElementNS(NS,t);for(const k in a)e.setAttribute(k,a[k]);p.appendChild(e);return e};
+let selTop="exp",selSub=null;
+function show(g,t){
+  panel.style.setProperty("--gc",`var(${g.c})`);
+  panel.innerHTML=t?`<div class="grp">${g.name}</div><h2>${t[0]}</h2>
+  <div><p>${t[1]}</p><div style="margin-top:10px">${accBadge(t[0])}${t[4]?'<span class="badge">Previews first, applies on confirm</span>':''}</div></div>
+  <div><div class="lbl">Example prompt</div><div class="ex">${t[2]}</div><div class="lbl">Key parameters</div><div class="params">${t[3]}</div></div>${t[5]?`<div style="grid-column:1/-1"><div class="lbl">Rules and behaviour</div><p>${t[5]}</p></div>`:''}`
+  :`<div class="grp">${g.name}</div><h2>${g.tools.length} tools</h2><p style="grid-column:1/-1">${g.tools.map(x=>x[0]).join(", ")}</p><p style="grid-column:1/-1;color:var(--muted)">Hover a tool above to see its use case and an example prompt.</p>`;
+}
+const BH=54,Y=[28,128,248,368],GAP=28;
+function draw(scrollTo){
+  svg.innerHTML="";
+  const top=TOP.find(t=>t.id===selTop);
+  // row 1
+  const topW=190;let x=0;const r1=TOP.map(t=>{const n={d:t,w:topW,y:Y[1],x:x};x+=topW+GAP;return n});
+  const rowCenter=r1[0].x+(r1[r1.length-1].x+topW-r1[0].x)/2;
+  const root={w:190,y:Y[0],x:rowCenter-95};
+  const parent=r1.find(n=>n.d.id===selTop);
+  const place=(items,cx,y)=>{const tot=items.reduce((a,i)=>a+i.w,0)+GAP*(items.length-1);let xx=cx-tot/2;items.forEach(i=>{i.x=xx;i.y=y;xx+=i.w+GAP})};
+  const mkTools=g=>g.tools.map(t=>({t,g,w:t[0].length*7.7+54}));
+  let row2=[],row3=[],sub=null;
+  if(top.leaf){row2=mkTools(GB[top.leaf]);place(row2,parent.x+topW/2,Y[2]);}
+  else{
+    row2=top.kids.map(k=>({g:GB[k],w:200}));place(row2,parent.x+topW/2,Y[2]);
+    if(!selSub||!top.kids.includes(selSub))selSub=top.kids[0];
+    sub=row2.find(n=>n.g.id===selSub);row3=mkTools(sub.g);place(row3,sub.x+sub.w/2,Y[3]);
+  }
+  const all=[root,...r1,...row2,...row3];
+  const minX=Math.min(...all.map(n=>n.x)),maxX=Math.max(...all.map(n=>n.x+n.w)),M=40;
+  all.forEach(n=>n.x+=M-minX);
+  const W=maxX-minX+2*M,lastY=(row3.length?Y[3]:Y[2])+BH+36;
+  svg.setAttribute("width",W);svg.setAttribute("height",lastY);svg.setAttribute("viewBox",`0 0 ${W} ${lastY}`);
+  const link=(p,kids,color)=>{if(!kids.length)return;const px=p.x+p.w/2,py=p.y+BH,my=py+(kids[0].y-py)/2;
+    kids.forEach(k=>{const kx=k.x+k.w/2;el("path",{d:`M${px},${py} V${my} H${kx} V${k.y}`,class:"edge",style:`stroke:var(${color})`})})};
+  link(root,r1,"--root");
+  const rowCol=sel=>sel;
+  link(parent,row2,top.c);
+  if(sub)link(sub,row3,sub.g.c);
+  // nodes
+  const cat=(n,name,count,c,on,click)=>{const g=el("g",{class:"cat"+(on?" on":""),style:`--gc:var(${c})`});
+    el("rect",{x:n.x,y:n.y,width:n.w,height:BH,rx:10,style:`stroke:var(${c})`},g);
+    const t=el("text",{x:n.x+n.w/2,y:n.y+23},g);t.textContent=name;
+    const m=el("text",{x:n.x+n.w/2,y:n.y+41,class:"n"},g);m.textContent=count;
+    g.addEventListener("click",click);return g};
+  const rn=el("g",{class:"root"});el("rect",{x:root.x,y:root.y,width:root.w,height:BH,rx:12},rn);
+  const rt=el("text",{x:root.x+root.w/2,y:root.y+BH/2+5},rn);rt.textContent="Kameleoon MCP server";
+  const cnt=t=>t.leaf?GB[t.leaf].tools.length:t.kids.reduce((a,k)=>a+GB[k].tools.length,0);
+  r1.forEach(n=>cat(n,n.d.name,cnt(n.d)+" tools",n.d.c,n.d.id===selTop,()=>{selTop=n.d.id;selSub=null;const g=n.d.leaf?GB[n.d.leaf]:GB[n.d.kids[0]];show(g,null);draw(true)}));
+  if(!top.leaf)row2.forEach(n=>cat(n,n.g.name,n.g.tools.length+" tools",n.g.c,n.g.id===selSub,()=>{selSub=n.g.id;show(n.g,null);draw(true)}));
+  const toolRow=top.leaf?row2:row3;
+  toolRow.forEach(n=>{const g=el("g",{class:"tool"+(n.t[4]?" guard":"")+(isRead(n.t[0])?" read":""),style:`--gc:var(${n.g.c})`});
+    el("rect",{class:"box",x:n.x,y:n.y,width:n.w,height:BH-8,rx:8},g);
+    el("rect",{class:"m",x:n.x+12,y:n.y+(BH-8)/2-6,width:12,height:12,rx:3},g);
+    const t=el("text",{x:n.x+34,y:n.y+(BH-8)/2+4.5},g);t.textContent=n.t[0];
+    g.addEventListener("mouseenter",()=>show(n.g,n.t));g.addEventListener("click",()=>show(n.g,n.t));});
+  if(scrollTo){const a=sub||parent;const mid=a.x+a.w/2;
+    chart.scrollTo({left:Math.max(0,mid-chart.clientWidth/2),behavior:scrollTo==="instant"?"auto":"smooth"})}
+}
+draw("instant");show(GB.exp,null);
+let drag=null;
+chart.addEventListener("pointerdown",e=>{if(e.target.closest(".cat,.tool"))return;drag={x:e.clientX,l:chart.scrollLeft};chart.setPointerCapture(e.pointerId)});
+chart.addEventListener("pointermove",e=>{if(drag)chart.scrollLeft=drag.l-(e.clientX-drag.x)});
+chart.addEventListener("pointerup",()=>drag=null);
+document.getElementById("list").innerHTML=TOP.map(tp=>{const gs=tp.leaf?[GB[tp.leaf]]:tp.kids.map(k=>GB[k]);return gs.map(g=>`<details style="--gc:var(${g.c})"><summary>${tp.leaf?"":tp.name+" · "}${g.name}<span>${g.tools.length}</span></summary>${g.tools.map(t=>`<div class="t"><code>${t[0]}</code> ${accBadge(t[0])}${t[4]?'<span class="badge">confirm</span>':''}<p>${t[1]}</p><em>${t[2]}</em>${t[5]?`<p style="font-size:14px;margin-top:6px"><b>Rules:</b> ${t[5]}</p>`:""}</div>`).join("")}</details>`).join("")}).join("");
+</script>

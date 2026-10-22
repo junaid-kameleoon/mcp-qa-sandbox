@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+<head>
+<script type="text/javascript">
+    // Duration in milliseconds to wait while the Kameleoon application file is loaded
+    var kameleoonLoadingTimeout = 750;
+
+    window.kameleoonQueue = window.kameleoonQueue || [];
+    window.kameleoonStartLoadTime = Date.now();
+    if (! document.getElementById("kameleoonLoadingStyleSheet") && ! window.kameleoonDisplayPageTimeOut)
+    {
+        var kameleoonS = document.getElementsByTagName("script")[0];
+        var kameleoonCc = "html::after { content: ''; position: fixed; inset: 0; background: #fff; z-index: 2147483647; }";
+        var kameleoonStn = document.createElement("style");
+        kameleoonStn.type = "text/css";
+        kameleoonStn.id = "kameleoonLoadingStyleSheet";
+        if (kameleoonStn.styleSheet)
+        {
+            kameleoonStn.styleSheet.cssText = kameleoonCc;
+        }
+        else
+        {
+            kameleoonStn.appendChild(document.createTextNode(kameleoonCc));
+        }
+        kameleoonS.parentNode.insertBefore(kameleoonStn, kameleoonS);
+        window.kameleoonDisplayPage = function(fromEngine)
+        {
+            if (!fromEngine)
+            {
+                window.kameleoonTimeout = true;
+            }
+            if (kameleoonStn.parentNode)
+            {
+                kameleoonStn.parentNode.removeChild(kameleoonStn);
+            }
+        };
+        window.kameleoonDisplayPageTimeOut = window.setTimeout(window.kameleoonDisplayPage, kameleoonLoadingTimeout);
+    }
+</script>
+<script
+    type="text/javascript"
+    src="//a4hk2ju9x6.kameleoon.io/engine.js"
+    async="true"
+    fetchpriority="high"
+></script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Acme Sandbox - Home</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="promo-banner" id="promo-banner">Free shipping on all orders this week</div>
+<nav><strong>Acme Sandbox</strong><div><a href="index.html">Home</a><a id="nav-pricing" href="pricing.html">Pricing</a></div></nav>
+<main class="hero">
+  <h1 id="hero-title">Ship better experiments, faster</h1>
+  <p id="hero-subtitle">A dummy site used to test Kameleoon's MCP and Automation API.</p>
+  <a id="cta-button" href="pricing.html">See pricing</a>
+</main>
+<footer>Test site. Not a real business.</footer>
+<script>
+  // Fire a Kameleoon custom goal id from window.kameleoonQueue when set (filled in once goals exist)
+  document.getElementById('cta-button').addEventListener('click', function () {
+    window.kameleoonQueue.push(function () { try { Kameleoon.API.Goals.processConversion(433423); } catch (e) {} });
+  });
+</script>
+</body>
+</html>

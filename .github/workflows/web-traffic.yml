@@ -1,0 +1,35 @@
+name: web-traffic
+
+# Sends a small random batch of synthetic visitors to the sandbox site.
+# (Scheduled every ~20 minutes in the working copy; trigger manually here.)
+on:
+  workflow_dispatch:
+    inputs:
+      visitors:
+        description: "Visitors to send (blank = random 3-12)"
+        required: false
+
+env:
+  BASE_URL: https://kameleoon-mcp-sandbox.netlify.app
+
+jobs:
+  traffic:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+      - run: pip install -r requirements.txt
+      - run: playwright install --with-deps chromium
+      - name: Random start delay (cadence jitter)
+        if: github.event_name == 'schedule'
+        run: sleep $((RANDOM % 600))
+      - name: Send visitors
+        run: |
+          N="${{ github.event.inputs.visitors }}"
+          if [ -z "$N" ]; then N=$((RANDOM % 10 + 3)); fi
+          echo "Sending $N visitors"
+          python bots/web_bot.py --base "$BASE_URL" --visitors "$N"
