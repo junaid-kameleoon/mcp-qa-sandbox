@@ -119,7 +119,7 @@ const G=[
 ["feature_flag_disable","Turn the per-environment switch off. The rule chain stays intact.","\"Turn off new_search in staging.\"","featureKey, siteCode, environmentKey",1],
 ["feature_flag_activity_logs_get","Audit trail of flag changes: who changed what, and when.","\"Show the recent change history for these feature flags.\"","type, page, perPage",0],
 ["feature_flag_experiment_results_get","Statistical results for every goal on a flag's experimentation rule.","\"Get the experiment results for the rule on new_search.\"","featureKey, siteCode, environmentKey, experimentId",0]]},
-{id:"del",name:"Flag delivery & variables",c:"--c3",tools:[
+{id:"del",name:"Rules, variations & variables",c:"--c3",tools:[
 ["feature_flag_rule_targeted_create","Serve one variation to a percentage of traffic, with optional scheduling.","\"Roll new_search out to 20% in production.\"","variationKey, exposition, releaseDateTime, timeZone",1,"If the call times out, the rule may still exist. Check feature_flag_get before retrying."],
 ["feature_flag_rule_progressive_create","Raise a variation's exposure in fixed steps for a gradual rollout.","\"Roll new_search out in production from 5% to 100%, adding 10% every day.\"","startExposition, stopExposition, increaseBy, frequencyUnit",1,"If the call times out, the rule may still exist. Check feature_flag_get before retrying."],
 ["feature_flag_rule_experimentation_create","A/B rule that splits traffic across variations with statistical tracking.","\"A/B test off vs on 50/50 on new_search.\"","controlVariationKey, trafficAllocations",1,"If the call times out, the rule may still exist. Check feature_flag_get before retrying."],
